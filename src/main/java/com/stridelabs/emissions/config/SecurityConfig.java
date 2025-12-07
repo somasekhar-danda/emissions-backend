@@ -50,10 +50,11 @@ public class SecurityConfig {
                     sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests(auth -> auth
-                    // IMPORTANT: use AntPathRequestMatcher instead of plain string patterns
-                    .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
-                    .requestMatchers(new AntPathRequestMatcher("/actuator/health")).permitAll()
-                    .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/actuator/health").permitAll()
+                    .requestMatchers("/h2-console/**").permitAll()
+                    .requestMatchers("/api/emissions/**").permitAll()
+                    .requestMatchers("/api/chat/**").permitAll()
                     .anyRequest().authenticated()
             )
 
@@ -67,12 +68,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "http://localhost:3000"
-                // add your deployed frontend domain here later, e.g.:
-                // "https://emissions-dashboard.vercel.app"
-        ));
+        config.addAllowedOriginPattern("*");
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
